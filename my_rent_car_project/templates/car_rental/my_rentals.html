@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Rented Cars</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+  }
+  h2 {
+    color: #2c3e50;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f4f4f4;
+  }
+  .returned {
+    background-color: #A9A9A9;
+  }
+  .back-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .back-button:hover {
+    background-color: #2980b9;
+  }
+</style>
+</head>
+<body>
+
+<h2>Your Rented Cars</h2>
+
+<button class="back-button" onclick="window.history.back()">Back</button>
+
+{% if rentals.exists %}
+<table>
+  <thead>
+    <tr>
+      <th>Car ID</th>
+      <th>Model</th>
+      <th>Rent Date</th>
+      <th>Return Date</th>
+      <th>Total Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for rental in rentals %}
+    {% if rental.returned %}
+    <tr class="returned">
+    {% else %}
+    <tr>
+    {% endif %}
+      <td>{{ rental.car.id }}</td>
+      <td>{{ rental.car.model }}</td>
+      <td>{{ rental.rent_date }}</td>
+      <td>{{ rental.return_date }}</td>
+      <td>${{ rental.total_price }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>You have no rentals.</p>
+{% endif %}
+
+</body>
+</html>

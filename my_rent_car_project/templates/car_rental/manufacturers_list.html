@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Manufacturers Details</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 50px; }
+  h1 { text-align: center; margin-bottom: 30px; }
+  table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+  }
+  th, td {
+      padding: 10px;
+      border: 1px solid #444;
+      text-align: left;
+  }
+  th {
+      background-color: #eee;
+  }
+  .back-button {
+    display: inline-block;
+    padding: 12px;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .back-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  .footer {
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<h1>Manufacturers Details</h1>
+<table>
+<thead>
+    <tr>
+        <th>Name</th>
+        <th>Country</th>
+        <th>Founded Date</th>
+        <th>Global Sales (USD)</th>
+    </tr>
+</thead>
+<tbody>
+    {% for manufacturer in manufacturers %}
+    <tr>
+        <td>{{ manufacturer.name }}</td>
+        <td>{{ manufacturer.country|default:"N/A" }}</td>
+        <td>{{ manufacturer.founded_date|date:"Y-m-d"|default:"N/A" }}</td>
+        <td>{{ manufacturer.global_sales|floatformat:2|default:"N/A" }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+<div class="footer">
+    <a href="#" class="back-button" onclick="window.history.back(); return false;">Back</a>
+</div>
+</body>
+</html>

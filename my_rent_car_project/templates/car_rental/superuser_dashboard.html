@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Superuser Dashboard</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  h2 {
+    color: #2c3e50;
+  }
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  a.button {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+  }
+  a.button:hover {
+    background-color: #2980b9;
+  }
+</style>
+</head>
+<body>
+<h2>Superuser Dashboard</h2>
+<div class="button-container">
+  <a href="{% url 'get_all_cars' %}" class="button">All Cars</a>
+  <a href="{% url 'car_detail_page' %}" class="button">Search Car</a>
+  <a href="{% url 'add_car_page' %}" class="button">Add Car </a>
+  <a href="{% url 'delete_car_graphic' %}" class="button">Delete Car</a>
+  <a href="{% url 'list_manufacturers' %}" class="button">Manufacturers</a>
+  <a href="{% url 'add_manufacturer' %}" class="button">Add Manufacturer</a>
+  <a href="{% url 'delete_manufacturer_from' %}" class="button">Delete Manufacturer</a>
+  <a href="{% url 'my_rentals' %}" class="button">My Rentals</a>
+  <a href="{% url 'rent_car' %}" class="button">Rent Car</a>
+  <a href="{% url 'return_car' %}" class="button">Return Car</a>
+  <a href="{% url 'add_image' %}" class="button">Add car image</a>
+  <a href="{% url 'delete_images' %}" class="button">Delete car images</a>
+  <a href="{% url 'reset_password' %}" class="button">Reset password</a>
+  <a href="{% url 'logout' %}" class="button">Logout</a>
+
+</div>
+</body>
+</html>

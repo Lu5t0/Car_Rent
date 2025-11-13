@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add a Car</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 50px;
+    max-width: 500px;
+    background-color: #f9f9f9;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #2c3e50;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  .submit-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  h3 {
+    margin-top: 30px;
+    text-align: center;
+    color: #2c3e50;
+  }
+  #result {
+    background-color: #eef2f3;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    margin-top: 10px;
+    font-family: monospace;
+    font-size: 16px;
+    color: #2c3e50;
+    text-align: center;
+  }
+  .back-button {
+    display: inline-block;
+    padding: 12px;
+    max-width: 200px;
+    margin: 20px auto;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, transform 0.2s;
+    display: block;
+    text-align: center;
+  }
+  .back-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+</style>
+</head>
+<body>
+
+<h2 style="text-align: center;">Car Addition Form</h2>
+<form id="addCarForm">
+    <label for="manufacturer_name">Manufacturer Name:</label>
+    <input type="text" id="manufacturer_name" required />
+
+    <label for="model">Model:</label>
+    <input type="text" id="model" required />
+
+    <label for="year">Year:</label>
+    <input type="number" id="year" required />
+
+    <label for="transmission">Transmission:</label>
+    <input type="text" id="transmission" required />
+
+    <label for="price_per_day_usd">Price per Day (USD):</label>
+    <input type="number" step="0.01" id="price_per_day_usd" required />
+
+    <button type="submit" class="submit-button">Submit</button>
+</form>
+
+<h3>Response:</h3>
+<pre id="result"></pre>
+
+<div style="text-align: center;">
+    <button class="back-button" onclick="window.history.back();">Back</button>
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i=0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.getElementById('addCarForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const data = {
+        manufacturer_name: document.getElementById('manufacturer_name').value,
+        model: document.getElementById('model').value,
+        year: parseInt(document.getElementById('year').value),
+        transmission: document.getElementById('transmission').value,
+        price_per_day_usd: parseFloat(document.getElementById('price_per_day_usd').value),
+    };
+
+    const csrftoken = getCookie('csrftoken');
+
+    fetch('http://localhost:8000/cars/add/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(json => {
+        const resultDiv = document.getElementById('result');
+        if (json.message) {
+            resultDiv.style.color = 'green';
+            resultDiv.style.fontSize = '16px';
+            resultDiv.style.fontWeight = 'bold';
+            resultDiv.textContent = json.message;
+        } else if (json.detail) {
+            resultDiv.style.color = 'red';
+            resultDiv.style.fontSize = '14px';
+            resultDiv.style.fontWeight = 'normal';
+            resultDiv.textContent = json.detail;
+        } else {
+            resultDiv.style.color = 'black';
+            resultDiv.textContent = JSON.stringify(json, null, 2);
+        }
+    })
+    .catch(err => {
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.color = 'red';
+        resultDiv.style.fontSize = '14px';
+        resultDiv.style.fontWeight = 'normal';
+        resultDiv.textContent = 'Error: ' + err;
+    });
+});
+</script>
+
+</body>
+</html>
