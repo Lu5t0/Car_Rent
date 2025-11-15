@@ -395,12 +395,14 @@ def delete_images_by_id(request):
             message = "Please enter a valid ID."
     return render(request, 'car_rental/delete_images.html', {'message': message})
 
+@login_required
 def get_top_rented_cars(limit=10):
     top_cars = Car.objects.annotate(
         rental_count=Count('loans')
     ).order_by('-rental_count')[:limit]
     return top_cars
 
+@login_required
 def top_cars_view(request):
     top_cars = get_top_rented_cars()
     return render(request, 'car_rental/top_cars.html', {'top_cars': top_cars})
