@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Top Rented Cars</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  h1 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+  }
+  h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #34495e;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    padding: 10px;
+    background-color: #ecf0f1;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  .button-container {
+    margin-top: 30px;
+  }
+  a.button {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  a.button:hover {
+    background-color: #2980b9;
+  }
+</style>
+</head>
+<body>
+<h1>Top Rented Cars</h1>
+<h2>Top 10</h2>
+<ul>
+{% for car in top_cars %}
+  <li>{{ car.model }} ({{ car.year }}) - Rentals: {{ car.rental_count }}</li>
+{% endfor %}
+</ul>
+<div class="button-container">
+  <a href="javascript:history.back()" class="button">Back</a>
+</div>
+</body>
+</html>

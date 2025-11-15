@@ -3,13 +3,13 @@ from django.http import JsonResponse,HttpResponseForbidden
 from django.contrib import messages
 from .models import Car,Manufacturer,Loan,CarImage
 import json
-from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from  datetime import datetime
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils import timezone
+from django.db.models import Count
 
 
 def superuser_required(view_func):
@@ -32,7 +32,7 @@ def main_page(request):
 @login_required
 def get_all_cars(request):
     if not request.user.is_authenticated:
-        return redirect('login')  # replace 'login' with your login URL name
+        return redirect('login')
     cars = Car.objects.all().order_by('id')
     return render(request, 'car_rental/cars_list.html', {'cars': cars})
 
@@ -106,10 +106,12 @@ def delete_car_graphic(request):
         car_id = request.POST.get('car_id')
         try:
             pk = int(car_id)
-
             car = Car.objects.get(pk=pk)
-            car.delete()
-            message = f'Car with ID {pk} was successfully deleted.'
+            if car.available:
+                car.delete()
+                message = f'Car with ID {pk} was successfully deleted.'
+            else:
+                message = 'Cannot delete this car because is rented.'
         except ValueError:
             message = 'Please enter a valid numeric ID.'
         except Car.DoesNotExist:
@@ -393,3 +395,12 @@ def delete_images_by_id(request):
             message = "Please enter a valid ID."
     return render(request, 'car_rental/delete_images.html', {'message': message})
 
+def get_top_rented_cars(limit=10):
+    top_cars = Car.objects.annotate(
+        rental_count=Count('loans')
+    ).order_by('-rental_count')[:limit]
+    return top_cars
+
+def top_cars_view(request):
+    top_cars = get_top_rented_cars()
+    return render(request, 'car_rental/top_cars.html', {'top_cars': top_cars})

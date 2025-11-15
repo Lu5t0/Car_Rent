@@ -43,7 +43,6 @@
     font-size: 14px;
   }
 
-
   .submit-button {
     display: block;
     width: 100%;
@@ -105,12 +104,21 @@
 <body>
 
 <h2 style="text-align: center;">Delete Manufacturer by Name</h2>
+
+
+{% if message %}
+<div style="background-color:#dff0d8; padding:10px; border-radius:5px; margin-bottom:15px;">
+    {{ message }}
+</div>
+{% endif %}
+
 <form method="post">
     {% csrf_token %}
     <label for="name">Enter Manufacturer Name:</label>
     <input type="text" id="name" name="name" placeholder="e.g., Sony" required />
     <button type="submit" class="submit-button">Delete</button>
 </form>
+
 <h3>Response:</h3>
 <pre id="result"></pre>
 

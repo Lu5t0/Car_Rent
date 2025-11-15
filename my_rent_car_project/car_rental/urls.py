@@ -1,6 +1,6 @@
-# C:\Users\sumer\Desktop\DRAGOS-Proiect-3\Proiect_Final_Dragos\Car_Rent\my_rent_car_project
 from django.urls import path
 from . import views
+
 urlpatterns = [
     path('', views.main_page, name='main_page'),
     path('superuser-dashboard/', views.superuser_dashboard, name='superuser_dashboard'),
@@ -23,4 +23,5 @@ urlpatterns = [
     path('add-image/', views.add_image_page, name='add_image'),
     path('api/add-car-image/', views.add_car_image, name='add_car_image'),
     path('delete-images/', views.delete_images_by_id, name='delete_images'),
+    path('top-cars/', views.top_cars_view, name='top_cars'),
 ]
