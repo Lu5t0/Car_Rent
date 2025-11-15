@@ -35,6 +35,48 @@ Un sistem complet de gestionare a închirierilor de mașini, destinat utilizator
 ---
 
 ## Instalare
+Instalarea dependențelor
+pip install -r requirements.txt
+
+### Crearea fișierului `.env` pentru configurarea bazei de date
+
+In directorul `Car_Rent/my_rent_car_project/my_rent_car_project`, creează un fișier numit `.env` și completează-l cu datele de conectare ale bazei tale de date:
+
+**Exemplu:**
+
+DB_NAME=nume_baza_de_date  
+DB_USER=username  
+DB_PASSWORD=parola  
+DB_HOST=localhost  
+DB_PORT=3306
+
+---
 
 
+După aceea, rulează următoarele comenzi pentru a crea și aplica migrațiile:
 
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+Pentru a putea accesa panoul de administrare , creează un superuser in terminalul python:
+
+```bash
+python manage.py createsuperuser
+```
+### Asigură-te că ești în directorul `Car_Rent/my_rent_car_project`
+
+Dacă nu ești deja în acest director, rulează următoarea comandă pentru a te deplasa:
+
+```bash
+cd Car_Rent/my_rent_car_project
+```
+### Pornește serverul pentru a testa aplicația
+
+Rulează următoarea comandă:
+
+```bash
+python manage.py runserver
+```
+
+### Apoi, accesează aplicația la adresa: localhost:8000
