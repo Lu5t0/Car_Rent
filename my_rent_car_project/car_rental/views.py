@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login,logout
 from  datetime import datetime
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Q
 
 
 def superuser_required(view_func):
@@ -39,7 +39,36 @@ def get_all_cars(request):
 @login_required
 def search_car(request):
     model_query = request.GET.get('model', '')
-    cars = Car.objects.filter(model__icontains=model_query).select_related('manufacturer', 'image')
+    year_query = request.GET.get('year', '')
+    transmission_query = request.GET.get('transmission', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    available_query = request.GET.get('available', '')
+
+    filters = Q()
+
+    if model_query:
+        filters &= Q(model__icontains=model_query)
+
+    if year_query:
+        filters &= Q(year=year_query)
+
+    if transmission_query:
+        filters &= Q(transmission__iexact=transmission_query)
+
+    if min_price:
+        filters &= Q(price_per_day_usd__gte=min_price)
+
+    if max_price:
+        filters &= Q(price_per_day_usd__lte=max_price)
+
+    if available_query:
+        if available_query.lower() in ['true', '1']:
+            filters &= Q(available=True)
+        elif available_query.lower() in ['false', '0']:
+            filters &= Q(available=False)
+
+    cars = Car.objects.filter(filters).select_related('manufacturer', 'image')
 
     result = []
     for car in cars:
@@ -61,8 +90,8 @@ def search_car(request):
     return JsonResponse(result, safe=False)
 
 @login_required
-def car_detail_page(request):
-    return render(request, 'car_rental/car_detail.html')
+def car_search_page(request):
+    return render(request, 'car_rental/car_search.html')
 
 @superuser_required
 def add_car(request):
@@ -290,6 +319,16 @@ def rent_car(request):
     except Car.DoesNotExist:
         return render(request, 'car_rental/rent_car.html', {'error': 'Car not found.'})
 
+    conflicting_rentals = Loan.objects.filter(
+        car=car,
+        rent_date__lte=end_date,
+        return_date__gte=start_date
+    )
+
+    if conflicting_rentals.exists():
+        return render(request, 'car_rental/rent_car.html',
+                      {'error': 'This car is already rented for the selected period.'})
+
     if not car.available:
         return render(request, 'car_rental/rent_car.html', {'error': 'Car is not available.'})
 
@@ -395,7 +434,7 @@ def delete_images_by_id(request):
             message = "Please enter a valid ID."
     return render(request, 'car_rental/delete_images.html', {'message': message})
 
-@login_required
+
 def get_top_rented_cars(limit=10):
     top_cars = Car.objects.annotate(
         rental_count=Count('loans')
